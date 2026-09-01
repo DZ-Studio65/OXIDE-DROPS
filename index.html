@@ -1,0 +1,5493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#070a0f">
+<title>OXIDE:DROPS</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0
+}
+
+body{
+  background:radial-gradient(circle at 50% -10%,#202d3d,#070a0f 45%);
+  color:#fff;
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+  -webkit-tap-highlight-color:transparent
+}
+
+button{
+  font:inherit;
+  cursor:pointer
+}
+
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed
+}
+
+.app{
+  width:min(100%,480px);
+  min-height:100vh;
+  margin:auto;
+  padding-bottom:90px
+}
+
+header{
+  height:70px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(7,10,15,.92);
+  backdrop-filter:blur(15px)
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:21px;
+  font-weight:1000
+}
+
+.logo img{
+  width:42px;
+  height:42px;
+  border-radius:10px;
+  object-fit:cover;
+  display:block
+}
+
+.balance-wrap{
+  display:flex;
+  align-items:center;
+  gap:6px
+}
+
+.balance{
+  background:#151d28;
+  border:1px solid #293443;
+  border-radius:14px;
+  padding:9px 12px;
+  color:#ffd84d;
+  font-weight:900
+}
+
+.balance-add{
+  width:38px;
+  height:38px;
+  border:1px solid #3b4655;
+  background:#1b2430;
+  color:#ffd84d;
+  border-radius:12px;
+  font-size:23px;
+  font-weight:1000
+}
+
+.page{
+  padding:0 15px
+}
+
+.hidden{
+  display:none!important
+}
+
+.title{
+  font-size:21px;
+  font-weight:900;
+  margin:24px 0 12px
+}
+
+.hero{
+  margin-top:12px;
+  padding:20px;
+  border:1px solid #344456;
+  border-radius:23px;
+  background:
+    radial-gradient(circle at 85% 20%,rgba(255,216,77,.16),transparent 30%),
+    linear-gradient(135deg,#1d2c3d,#0e141c);
+  position:relative;
+  overflow:hidden
+}
+
+.hero-logo{
+  width:58px;
+  height:58px;
+  border-radius:16px;
+  object-fit:cover;
+  border:1px solid #435467;
+  margin-bottom:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,.4)
+}
+
+.hero small{
+  color:#ffd84d;
+  font-weight:900
+}
+
+.hero h1{
+  font-size:28px;
+  margin:8px 0
+}
+
+.hero p{
+  color:#8995a6;
+  line-height:1.45
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  right:-80px;
+  bottom:-100px;
+  border-radius:50%;
+  background:rgba(255,216,77,.08)
+}
+
+/* SEARCH */
+
+.search-row{
+  display:flex;
+  gap:8px;
+  margin-top:17px
+}
+
+.search-box{
+  flex:1;
+  padding:13px 14px;
+  border:1px solid #293443;
+  border-radius:13px;
+  background:#111720;
+  color:#fff;
+  outline:none;
+  font-size:14px
+}
+
+.search-box:focus{
+  border-color:#ffd84d
+}
+
+.filter-main{
+  width:50px;
+  border:1px solid #293443;
+  background:#111720;
+  color:#fff;
+  border-radius:13px;
+  font-size:21px
+}
+
+.category-bar{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  margin-top:10px;
+  padding-bottom:2px
+}
+
+.category-bar::-webkit-scrollbar{
+  display:none
+}
+
+.category-chip{
+  white-space:nowrap;
+  padding:9px 12px;
+  border-radius:11px;
+  border:1px solid #293443;
+  background:#111720;
+  color:#8995a6;
+  font-size:12px;
+  font-weight:900
+}
+
+.category-chip.active{
+  background:#fff;
+  color:#000;
+  border-color:#fff
+}
+
+.cases{
+  display:grid;
+  gap:12px
+}
+
+.case{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:14px;
+  border:1px solid #263140;
+  background:#111720;
+  border-radius:19px
+}
+
+.case-icon{
+  width:68px;
+  height:68px;
+  border-radius:17px;
+  background:#202a37;
+  display:grid;
+  place-items:center;
+  font-size:34px;
+  flex-shrink:0
+}
+
+.case-info{
+  flex:1;
+  min-width:0
+}
+
+.case-name{
+  font-weight:900;
+  font-size:17px
+}
+
+.case-price{
+  margin-top:6px;
+  color:#ffd84d;
+  font-weight:800
+}
+
+.case-type{
+  margin-top:4px;
+  color:#8995a6;
+  font-size:11px
+}
+
+.open{
+  border:0;
+  background:#fff;
+  color:#080a0e;
+  border-radius:12px;
+  padding:11px 13px;
+  font-weight:900;
+  flex-shrink:0
+}
+
+/* CARDS */
+
+.card{
+  background:#111720;
+  border:1px solid #263140;
+  border-radius:20px;
+  padding:17px
+}
+
+/* MODALS */
+
+.case-modal,
+.skin-selector,
+.confirm-modal,
+.main-filter-modal,
+.case-filter-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.84);
+  z-index:150;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px
+}
+
+.case-modal.show,
+.skin-selector.show,
+.confirm-modal.show,
+.main-filter-modal.show,
+.case-filter-modal.show{
+  display:flex
+}
+
+.case-window{
+  width:min(470px,94%);
+  background:#10161e;
+  border:1px solid #303c4c;
+  border-radius:24px;
+  padding:18px 12px 22px;
+  overflow:hidden;
+  box-shadow:0 25px 80px rgba(0,0,0,.65)
+}
+
+.case-window h2{
+  text-align:center;
+  margin-bottom:17px
+}
+
+.roulette{
+  position:relative;
+  width:100%;
+  height:132px;
+  overflow:hidden;
+  border-radius:17px;
+  background:#090d13;
+  border:1px solid #27313e
+}
+
+.roulette::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:2px;
+  background:#fff;
+  box-shadow:0 0 14px rgba(255,255,255,.8);
+  z-index:20
+}
+
+.pointer{
+  position:absolute;
+  top:-1px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:30;
+  width:0;
+  height:0;
+  border-left:11px solid transparent;
+  border-right:11px solid transparent;
+  border-top:23px solid #ffd84d;
+  filter:drop-shadow(0 2px 5px #000)
+}
+
+.roulette-track{
+  height:100%;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding-left:50%;
+  will-change:transform
+}
+
+.roulette-item{
+  flex:0 0 94px;
+  height:102px;
+  border-radius:14px;
+  border:1px solid #303b49;
+  background:#1b2430;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px
+}
+
+.roulette-item .icon{
+  width:53px;
+  height:53px;
+  border-radius:11px;
+  background:#283341;
+  display:grid;
+  place-items:center;
+  font-size:29px
+}
+
+.roulette-item span{
+  font-size:10px;
+  color:#9ba6b5;
+  text-align:center
+}
+
+.result{
+  text-align:center;
+  margin-top:17px;
+  min-height:25px;
+  font-size:18px;
+  font-weight:900
+}
+
+.close-case{
+  width:100%;
+  margin-top:14px;
+  border:0;
+  border-radius:13px;
+  padding:13px;
+  background:#fff;
+  font-weight:1000
+}
+
+/* INVENTORY */
+
+.inventory-actions{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  margin-bottom:10px
+}
+
+.sell-all{
+  border:0;
+  border-radius:12px;
+  padding:12px;
+  background:#ff4545;
+  color:#fff;
+  font-weight:1000
+}
+
+.inventory-filter{
+  border:1px solid #293443;
+  background:#111720;
+  color:#fff;
+  border-radius:12px;
+  padding:0 14px;
+  font-weight:900
+}
+
+.inventory-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:7px
+}
+
+.item{
+  background:#111720;
+  border:1px solid #263140;
+  border-radius:14px;
+  padding:7px;
+  min-width:0
+}
+
+.item-img{
+  height:76px;
+  border-radius:10px;
+  background:#202a36;
+  display:grid;
+  place-items:center;
+  font-size:29px
+}
+
+.item-name{
+  font-weight:900;
+  margin-top:7px;
+  font-size:11px;
+  line-height:1.15;
+  min-height:26px
+}
+
+.item-price{
+  margin-top:4px;
+  font-weight:900;
+  font-size:11px
+}
+
+.sell{
+  width:100%;
+  margin-top:7px;
+  border:0;
+  border-radius:8px;
+  padding:7px 2px;
+  background:#fff;
+  color:#000;
+  font-size:10px;
+  font-weight:900
+}
+
+.common{color:#bfc5cc}
+.rare{color:#4d8dff}
+.superrare{color:#46d8ff}
+.epic{color:#b86cff}
+.mythic{color:#ff4545}
+.legendary{color:#ffd21f}
+
+/* UPGRADE */
+
+.upgrade-layout{
+  display:grid;
+  gap:12px
+}
+
+.upgrade-item{
+  background:#111720;
+  border:1px solid #263140;
+  border-radius:20px;
+  padding:15px
+}
+
+.upgrade-image{
+  min-height:150px;
+  border-radius:15px;
+  background:#202a36;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  font-size:48px
+}
+
+.selected-name{
+  margin-top:12px;
+  font-size:18px;
+  font-weight:1000
+}
+
+.select-skin{
+  margin-top:11px;
+  width:100%;
+  padding:12px;
+  border:1px solid #303c4b;
+  background:#1a222d;
+  color:#fff;
+  border-radius:12px;
+  font-weight:900
+}
+
+.selected-count{
+  margin-top:7px;
+  color:#8995a6;
+  font-size:13px
+}
+
+.chances{
+  display:grid;
+  gap:8px;
+  margin-top:12px
+}
+
+.chance{
+  display:flex;
+  justify-content:space-between;
+  padding:13px;
+  background:#0c1118;
+  border:1px solid #293443;
+  border-radius:13px;
+  color:#fff
+}
+
+.chance.selected{
+  border-color:#fff
+}
+
+.green{color:#5ee68a}
+.yellow{color:#ffd84d}
+.red{color:#ff6464}
+
+.wheel-wrap{
+  position:relative;
+  width:245px;
+  margin:18px auto
+}
+
+.wheel{
+  width:245px;
+  height:245px;
+  border-radius:50%;
+  position:relative;
+  display:grid;
+  place-items:center;
+  background:conic-gradient(
+    from 0deg,
+    #5ee68a 0deg 270deg,
+    #252c36 270deg 360deg
+  );
+  box-shadow:0 0 45px rgba(255,216,77,.08);
+  transform:rotate(0deg);
+  will-change:transform
+}
+
+.wheel::after{
+  content:"";
+  width:185px;
+  height:185px;
+  background:#0b1016;
+  border-radius:50%;
+  position:absolute
+}
+
+.wheel span{
+  position:relative;
+  z-index:2;
+  font-size:27px;
+  font-weight:1000
+}
+
+.wheel-arrow{
+  position:absolute;
+  top:-13px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
+  width:0;
+  height:0;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-top:27px solid #fff;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.7))
+}
+
+.strength{
+  text-align:center;
+  color:#8995a6
+}
+
+.strength b{
+  color:#fff;
+  font-size:28px
+}
+
+.hold{
+  width:100%;
+  margin-top:13px;
+  padding:17px;
+  border:0;
+  border-radius:15px;
+  background:#fff;
+  color:#000;
+  font-weight:1000;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:none
+}
+
+.hold.active{
+  background:#ffd84d
+}
+
+.upgrade-cost{
+  text-align:center;
+  margin-top:10px;
+  color:#ffd84d;
+  font-weight:900
+}
+
+.upgrade-info{
+  color:#8995a6;
+  font-size:12px;
+  text-align:center;
+  line-height:1.4;
+  margin-top:8px
+}
+
+/* PROFILE */
+
+.profile-head{
+  display:flex;
+  align-items:center;
+  gap:14px
+}
+
+.avatar{
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:#222d3b;
+  display:grid;
+  place-items:center;
+  font-size:27px;
+  overflow:hidden;
+  flex-shrink:0
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover
+}
+
+.name{
+  font-size:20px;
+  font-weight:900
+}
+
+.rank{
+  color:#ffd84d;
+  margin-top:5px
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:16px
+}
+
+.stat{
+  background:#0c1118;
+  border-radius:13px;
+  padding:12px 5px;
+  text-align:center
+}
+
+.stat b{
+  display:block;
+  font-size:18px
+}
+
+.stat span{
+  font-size:11px;
+  color:#8995a6
+}
+
+.progress{
+  height:8px;
+  background:#0b1016;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:13px
+}
+
+.progress div{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#ffd84d,#ff9d38);
+  transition:.4s
+}
+
+.daily-card{
+  margin-top:15px
+}
+
+.reward-box{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+  margin-top:12px
+}
+
+.day{
+  background:#0c1118;
+  border:1px solid #263140;
+  border-radius:10px;
+  padding:9px 2px;
+  text-align:center;
+  font-size:11px
+}
+
+.day b{
+  display:block;
+  color:#ffd84d;
+  margin-top:5px
+}
+
+.day.claimed{
+  opacity:.4
+}
+
+.day.today{
+  border-color:#ffd84d;
+  box-shadow:0 0 12px rgba(255,216,77,.15)
+}
+
+.claim-daily{
+  width:100%;
+  margin-top:12px;
+  border:0;
+  border-radius:12px;
+  padding:12px;
+  background:#ffd84d;
+  color:#000;
+  font-weight:1000
+}
+
+/* EARN */
+
+.earn-hero{
+  text-align:center;
+  padding:22px 15px
+}
+
+.earn-logo{
+  width:65px;
+  height:65px;
+  object-fit:cover;
+  border-radius:18px;
+  margin-bottom:9px
+}
+
+.earn-game{
+  font-size:12px;
+  color:#8995a6;
+  font-weight:900
+}
+
+.earn-title{
+  font-size:23px;
+  font-weight:1000;
+  margin-top:10px
+}
+
+.earn-description{
+  color:#8995a6;
+  font-size:13px;
+  line-height:1.45;
+  margin-top:8px
+}
+
+.energy-box{
+  margin-top:17px;
+  background:#0c1118;
+  border:1px solid #263140;
+  border-radius:16px;
+  padding:13px
+}
+
+.energy-top{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  font-weight:900
+}
+
+.energy-bar{
+  height:8px;
+  margin-top:9px;
+  background:#202936;
+  border-radius:20px;
+  overflow:hidden
+}
+
+.energy-bar div{
+  height:100%;
+  width:100%;
+  background:#5ee68a;
+  transition:.2s
+}
+
+.coin-area{
+  margin-top:20px;
+  display:grid;
+  place-items:center;
+  position:relative;
+  min-height:260px
+}
+
+.big-coin{
+  width:185px;
+  height:185px;
+  border-radius:50%;
+  border:0;
+  background:
+    radial-gradient(circle at 35% 28%,#fff3a1,#ffd84d 35%,#dba500 100%);
+  box-shadow:
+    0 15px 50px rgba(255,216,77,.22),
+    inset 0 4px 0 rgba(255,255,255,.4);
+  font-size:75px;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:manipulation;
+  transition:transform .08s
+}
+
+.big-coin:active{
+  transform:scale(.93)
+}
+
+.coin-plus{
+  position:absolute;
+  pointer-events:none;
+  color:#5ee68a;
+  font-size:21px;
+  font-weight:1000;
+  animation:coinFloat .7s ease-out forwards;
+  z-index:10
+}
+
+@keyframes coinFloat{
+  0%{
+    opacity:1;
+    transform:translate(-50%,0) scale(1)
+  }
+  100%{
+    opacity:0;
+    transform:translate(-50%,-65px) scale(1.1)
+  }
+}
+
+.earn-hint{
+  color:#8995a6;
+  text-align:center;
+  font-size:12px;
+  margin-top:4px
+}
+
+.referral{
+  margin-top:15px
+}
+
+.referral h3{
+  font-size:16px;
+  margin-bottom:7px
+}
+
+.referral p{
+  color:#8995a6;
+  font-size:12px;
+  line-height:1.4
+}
+
+.referral-row{
+  display:flex;
+  gap:7px;
+  margin-top:10px
+}
+
+.referral-input{
+  flex:1;
+  min-width:0;
+  background:#0c1118;
+  border:1px solid #293443;
+  color:#fff;
+  border-radius:11px;
+  padding:10px;
+  font-size:11px
+}
+
+.referral-copy{
+  border:0;
+  background:#fff;
+  color:#000;
+  border-radius:11px;
+  padding:0 12px;
+  font-weight:1000;
+  font-size:11px
+}
+
+/* STORE MODAL */
+
+.store{
+  display:grid;
+  gap:11px
+}
+
+.pack{
+  padding:18px;
+  background:linear-gradient(135deg,#151e29,#0f141b);
+  border:1px solid #263140;
+  border-radius:19px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between
+}
+
+.pack-coins{
+  font-size:21px;
+  font-weight:1000
+}
+
+.pack-price{
+  color:#ffd84d;
+  margin-top:5px;
+  font-weight:900
+}
+
+.buy{
+  border:0;
+  border-radius:12px;
+  padding:11px 15px;
+  background:#fff;
+  color:#000;
+  font-weight:1000
+}
+
+/* BOTTOM */
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(480px,100%);
+  height:76px;
+  background:rgba(13,18,25,.96);
+  backdrop-filter:blur(18px);
+  border-top:1px solid #28313d;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  z-index:50
+}
+
+.bottom button{
+  border:0;
+  background:none;
+  color:#788495;
+  font-size:10px;
+  font-weight:700;
+  position:relative
+}
+
+.bottom button span{
+  font-size:21px;
+  display:block;
+  margin-bottom:3px
+}
+
+.bottom button.active{
+  color:#fff
+}
+
+.notification-dot{
+  position:absolute;
+  top:7px;
+  right:calc(50% - 19px);
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#ff3b3b;
+  border:2px solid #0d1219;
+  box-shadow:0 0 10px rgba(255,59,59,.7)
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:91px;
+  transform:translateX(-50%) translateY(20px);
+  background:#fff;
+  color:#000;
+  padding:12px 17px;
+  border-radius:13px;
+  font-weight:900;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:300;
+  max-width:90%;
+  text-align:center
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0)
+}
+
+/* SELECTOR */
+
+.skin-window{
+  width:min(450px,94%);
+  max-height:82vh;
+  overflow:auto;
+  background:#10161e;
+  border:1px solid #303c4c;
+  border-radius:22px;
+  padding:17px
+}
+
+.skin-window h2{
+  text-align:center;
+  margin-bottom:12px
+}
+
+.skin-help{
+  color:#8995a6;
+  font-size:13px;
+  text-align:center;
+  margin-bottom:12px;
+  line-height:1.4
+}
+
+.skin-list{
+  display:grid;
+  gap:8px
+}
+
+.skin-select-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid #293443;
+  background:#151c25;
+  border-radius:13px;
+  color:#fff;
+  text-align:left;
+  width:100%
+}
+
+.skin-select-item.selected{
+  border-color:#ffd84d;
+  box-shadow:0 0 10px rgba(255,216,77,.12)
+}
+
+.skin-select-icon{
+  width:48px;
+  height:48px;
+  border-radius:10px;
+  background:#202a36;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  flex-shrink:0
+}
+
+.skin-select-info{
+  flex:1
+}
+
+.skin-select-name{
+  font-weight:900;
+  font-size:13px
+}
+
+.skin-select-value{
+  font-size:11px;
+  color:#ffd84d;
+  margin-top:4px
+}
+
+.selector-close{
+  width:100%;
+  margin-top:12px;
+  border:0;
+  border-radius:12px;
+  padding:12px;
+  background:#fff;
+  color:#000;
+  font-weight:1000
+}
+
+/* CONFIRM */
+
+.confirm-window{
+  width:min(420px,94%);
+  background:#10161e;
+  border:1px solid #303c4c;
+  border-radius:22px;
+  padding:20px
+}
+
+.confirm-window h2{
+  text-align:center;
+  font-size:19px;
+  margin-bottom:10px
+}
+
+.confirm-text{
+  color:#8995a6;
+  text-align:center;
+  line-height:1.45;
+  font-size:14px
+}
+
+.confirm-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:17px
+}
+
+.confirm-yes,
+.confirm-no{
+  border:0;
+  border-radius:12px;
+  padding:13px;
+  font-weight:1000
+}
+
+.confirm-yes{
+  background:#fff;
+  color:#000
+}
+
+.confirm-no{
+  background:#252e3a;
+  color:#fff
+}
+
+/* FILTER WINDOWS */
+
+.filter-window{
+  width:min(420px,94%);
+  background:#10161e;
+  border:1px solid #303c4c;
+  border-radius:22px;
+  padding:18px
+}
+
+.filter-window h2{
+  text-align:center;
+  margin-bottom:14px
+}
+
+.filter-option{
+  width:100%;
+  padding:14px;
+  margin-top:8px;
+  border:1px solid #293443;
+  background:#151c25;
+  color:#fff;
+  border-radius:12px;
+  text-align:left;
+  font-weight:900
+}
+
+.filter-option.selected{
+  border-color:#ffd84d;
+  color:#ffd84d
+}
+
+.filter-close{
+  width:100%;
+  border:0;
+  background:#fff;
+  color:#000;
+  border-radius:12px;
+  padding:13px;
+  margin-top:13px;
+  font-weight:1000
+}
+
+/* EMPTY */
+
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding:30px 15px;
+  color:#8995a6
+}
+
+@media(max-width:370px){
+  .inventory-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))
+  }
+
+  .case{
+    gap:8px
+  }
+
+  .case-icon{
+    width:58px;
+    height:58px
+  }
+
+  .open{
+    padding:10px
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+  <div class="logo">
+    <img
+      src="oxide-avatar.jpeg"
+      id="headerAvatar"
+      alt="OXIDE:DROPS"
+    >
+    <span>OXIDE:DROPS</span>
+  </div>
+
+  <div class="balance-wrap">
+
+    <div class="balance">
+      🪙 <span id="coins">250</span>
+    </div>
+
+    <button
+      class="balance-add"
+      onclick="openStore()"
+    >
+      +
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- ================= HOME ================= -->
+
+<section id="home" class="page">
+
+  <div class="hero">
+
+    <img
+      class="hero-logo"
+      src="oxide-avatar.jpeg"
+      id="heroLogo"
+      alt="OXIDE"
+    >
+
+    <small>OXIDE:DROPS</small>
+
+    <h1>
+      Открывай. Улучшай. Собирай.
+    </h1>
+
+    <p>
+      Лучшие наборы, редкие скины,
+      апгрейды и коллекция в одном месте.
+    </p>
+
+  </div>
+
+
+  <div class="search-row">
+
+    <input
+      class="search-box"
+      id="caseSearch"
+      type="search"
+      placeholder="🔎 Поиск кейсов..."
+      oninput="renderHomeCases()"
+    >
+
+    <button
+      class="filter-main"
+      onclick="openMainFilter()"
+    >
+      ☰
+    </button>
+
+  </div>
+
+
+  <div class="category-bar">
+
+    <button
+      class="category-chip active"
+      id="allCategory"
+      onclick="setMainCategory('all',this)"
+    >
+      Все
+    </button>
+
+    <button
+      class="category-chip"
+      onclick="openCaseFilter()"
+    >
+      🎁 Кейсы
+    </button>
+
+    <button
+      class="category-chip"
+      onclick="setMainCategory('packs',this)"
+    >
+      📦 Наборы
+    </button>
+
+  </div>
+
+
+  <div class="title">
+    🔥 Лучшие наборы
+  </div>
+
+  <div
+    class="cases"
+    id="homeCases"
+  ></div>
+
+</section>
+
+
+<!-- ================= INVENTORY ================= -->
+
+<section
+  id="inventory"
+  class="page hidden"
+>
+
+  <div class="title">
+    🎒 Инвентарь
+  </div>
+
+  <div class="inventory-actions">
+
+    <button
+      class="sell-all"
+      onclick="confirmSellAll()"
+    >
+      💰 Продать всё
+    </button>
+
+    <button
+      class="inventory-filter"
+      onclick="openInventoryFilter()"
+    >
+      ☰ Фильтр
+    </button>
+
+  </div>
+
+  <div
+    id="inventoryGrid"
+    class="inventory-grid"
+  ></div>
+
+</section>
+
+
+<!-- ================= UPGRADE ================= -->
+
+<section
+  id="upgrade"
+  class="page hidden"
+>
+
+  <div class="title">
+    ⬆️ Upgrade
+  </div>
+
+  <div class="upgrade-layout">
+
+    <div class="upgrade-item">
+
+      <div
+        class="upgrade-image"
+        id="upgradeIcon"
+      >
+        ⬜
+      </div>
+
+      <div
+        class="selected-name"
+        id="upgradeName"
+      >
+        Скины не выбраны
+      </div>
+
+      <div
+        class="selected-count"
+        id="selectedCount"
+      >
+        Выберите до 3 скинов одной редкости
+      </div>
+
+      <div
+        style="color:#ffd84d;margin-top:5px"
+        id="upgradeValue"
+      >
+        —
+      </div>
+
+      <button
+        class="select-skin"
+        onclick="openSkinSelector()"
+      >
+        🎒 Выбрать скины
+      </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <div style="font-weight:900">
+        Шанс улучшения
+      </div>
+
+      <div class="chances">
+
+        <button
+          class="chance selected"
+          onclick="selectChance(75,this)"
+        >
+          <span class="green">
+            🟢 75%
+          </span>
+
+          <b class="green">
+            +1 редкость
+          </b>
+        </button>
+
+
+        <button
+          class="chance"
+          onclick="selectChance(50,this)"
+        >
+          <span class="yellow">
+            🟡 50%
+          </span>
+
+          <b class="yellow">
+            +2 редкости
+          </b>
+        </button>
+
+
+        <button
+          class="chance"
+          onclick="selectChance(33,this)"
+        >
+          <span class="red">
+            🔴 33%
+          </span>
+
+          <b class="red">
+            +3 редкости
+          </b>
+        </button>
+
+      </div>
+
+
+      <div class="wheel-wrap">
+
+        <div class="wheel-arrow"></div>
+
+        <div
+          class="wheel"
+          id="wheel"
+        >
+          <span id="wheelText">
+            75%
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="strength">
+
+        Сила прокрутки<br>
+
+        <b id="strength">
+          20
+        </b>
+
+        / 100
+
+      </div>
+
+
+      <div class="upgrade-cost">
+        Стоимость попытки: 10 🪙
+      </div>
+
+      <div class="upgrade-info">
+        Сила набирается по +5 каждые 52 мс.
+        Каждые 20 силы дают +10% к скорости.
+      </div>
+
+
+      <button
+        class="hold"
+        id="holdButton"
+      >
+        УДЕРЖИВАЙ ДЛЯ НАБОРА СИЛЫ
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= PROFILE ================= -->
+
+<section
+  id="profile"
+  class="page hidden"
+>
+
+  <div class="title">
+    👤 Профиль
+  </div>
+
+  <div class="card">
+
+    <div class="profile-head">
+
+      <div
+        class="avatar"
+        id="avatar"
+      >
+        <span>👤</span>
+      </div>
+
+      <div>
+
+        <div
+          class="name"
+          id="profileName"
+        >
+          Игрок
+        </div>
+
+        <div
+          class="rank"
+          id="profileRank"
+        >
+          Новичок
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="progress">
+      <div id="xpBar"></div>
+    </div>
+
+
+    <div
+      style="margin-top:7px;color:#8995a6;font-size:12px"
+      id="xpText"
+    >
+      0 HP
+    </div>
+
+
+    <div class="stats">
+
+      <div class="stat">
+        <b id="statOpen">0</b>
+        <span>Открытий</span>
+      </div>
+
+      <div class="stat">
+        <b id="statUpgrade">0</b>
+        <span>Апгрейдов</span>
+      </div>
+
+      <div class="stat">
+        <b id="statFriends">0</b>
+        <span>Друзей</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card daily-card">
+
+    <div style="font-weight:1000;font-size:18px">
+      🎁 Ежедневная награда
+    </div>
+
+    <div
+      style="color:#8995a6;font-size:13px;margin-top:5px"
+      id="dailyStatus"
+    >
+      Награда за вход
+    </div>
+
+    <div
+      class="reward-box"
+      id="dailyBox"
+    ></div>
+
+    <button
+      class="claim-daily"
+      id="claimDailyButton"
+      onclick="claimDaily()"
+    >
+      ЗАБРАТЬ ПОДАРОК
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ================= RATING ================= -->
+
+<section
+  id="rating"
+  class="page hidden"
+>
+
+  <div class="title">
+    🏆 ТОП-100
+  </div>
+
+  <div class="card">
+    Рейтинг подключим к серверной базе.
+  </div>
+
+</section>
+
+
+<!-- ================= EARN ================= -->
+
+<section
+  id="earn"
+  class="page hidden"
+>
+
+  <div class="title">
+    🔥 ЗАРАБОТАТЬ
+  </div>
+
+
+  <div class="card earn-hero">
+
+    <img
+      class="earn-logo"
+      src="oxide-avatar.jpeg"
+      alt="OXIDE"
+    >
+
+    <div class="earn-game">
+      OXIDE:DROPS
+    </div>
+
+    <div class="earn-title">
+      Зарабатывай монеты Бесплатно, прямо сейчас🔥
+    </div>
+
+    <div class="earn-description">
+      Нажимай на монетку и получай монеты прямо на баланс.
+      За каждое нажатие расходуется энергия.
+    </div>
+
+  </div>
+
+
+  <div class="energy-box">
+
+    <div class="energy-top">
+      <span>⚡ Энергия</span>
+      <span>
+        <b id="energy">100</b> / 100
+      </span>
+    </div>
+
+    <div class="energy-bar">
+      <div id="energyBar"></div>
+    </div>
+
+  </div>
+
+
+  <div class="coin-area">
+
+    <button
+      class="big-coin"
+      id="bigCoin"
+      onclick="earnCoin(event)"
+    >
+      🪙
+    </button>
+
+  </div>
+
+  <div class="earn-hint">
+    1 нажатие = +1 🪙
+  </div>
+
+
+  <div class="card referral">
+
+    <h3>
+      ПРИГЛАШАЙ ДРУЗЕЙ И ПОЛУЧАЙ МОНЕТЫ И ПРИЯТНЫЕ БОНУСЫ🎁✅
+    </h3>
+
+    <p>
+      За каждого человека, который активирует бота
+      по твоей ссылке, ты получаешь 30 🪙 и бесплатный
+      набор «Эпоха современности».
+    </p>
+
+    <div class="referral-row">
+
+      <input
+        class="referral-input"
+        id="referralLink"
+        readonly
+      >
+
+      <button
+        class="referral-copy"
+        onclick="copyReferral()"
+      >
+        Копировать
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= BOTTOM ================= -->
+
+<div class="bottom">
+
+  <button
+    class="active"
+    onclick="showPage('home',this)"
+  >
+    <span>🏠</span>
+    Главная
+  </button>
+
+
+  <button
+    onclick="showPage('inventory',this)"
+  >
+    <span>🎒</span>
+    Инвентарь
+  </button>
+
+
+  <button
+    onclick="showPage('upgrade',this)"
+  >
+    <span>⬆️</span>
+    Upgrade
+  </button>
+
+
+  <button
+    id="profileButton"
+    onclick="showPage('profile',this)"
+  >
+    <span>👤</span>
+    Профиль
+
+    <i
+      class="notification-dot"
+      id="dailyDot"
+    ></i>
+
+  </button>
+
+
+  <button
+    onclick="showPage('earn',this)"
+  >
+    <span>🔥</span>
+    Заработать
+  </button>
+
+</div>
+
+</div>
+
+
+<!-- ================= CASE MODAL ================= -->
+
+<div
+  class="case-modal"
+  id="caseModal"
+>
+
+  <div class="case-window">
+
+    <h2 id="caseTitle">
+      Открытие кейса
+    </h2>
+
+    <div class="roulette">
+
+      <div class="pointer"></div>
+
+      <div
+        class="roulette-track"
+        id="rouletteTrack"
+      ></div>
+
+    </div>
+
+    <div
+      class="result"
+      id="caseResult"
+    >
+      Крутим...
+    </div>
+
+    <button
+      class="close-case"
+      id="closeCaseButton"
+      onclick="closeCase()"
+      disabled
+    >
+      ЗАКРЫТЬ
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SKIN SELECTOR ================= -->
+
+<div
+  class="skin-selector"
+  id="skinSelector"
+>
+
+  <div class="skin-window">
+
+    <h2>
+      🎒 Выбор скинов
+    </h2>
+
+    <div class="skin-help">
+      Можно выбрать до 3 скинов одной редкости.
+      Все выбранные предметы будут улучшаться вместе.
+    </div>
+
+    <div
+      class="skin-list"
+      id="skinList"
+    ></div>
+
+    <button
+      class="selector-close"
+      onclick="closeSkinSelector()"
+    >
+      ГОТОВО
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CONFIRM ================= -->
+
+<div
+  class="confirm-modal"
+  id="confirmModal"
+>
+
+  <div class="confirm-window">
+
+    <h2 id="confirmTitle">
+      Подтверждение
+    </h2>
+
+    <div
+      class="confirm-text"
+      id="confirmText"
+    ></div>
+
+    <div class="confirm-buttons">
+
+      <button
+        class="confirm-yes"
+        id="confirmYes"
+      >
+        Да
+      </button>
+
+      <button
+        class="confirm-no"
+        onclick="closeConfirm()"
+      >
+        Нет
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= MAIN FILTER ================= -->
+
+<div
+  class="main-filter-modal"
+  id="mainFilterModal"
+>
+
+  <div class="filter-window">
+
+    <h2>
+      🔎 Что показывать
+    </h2>
+
+    <button
+      class="filter-option selected"
+      id="mainFilterCases"
+      onclick="selectMainFilter('cases')"
+    >
+      🎁 Кейсы
+    </button>
+
+    <button
+      class="filter-option"
+      id="mainFilterPacks"
+      onclick="selectMainFilter('packs')"
+    >
+      📦 Наборы
+    </button>
+
+    <button
+      class="filter-close"
+      onclick="closeMainFilter()"
+    >
+      ГОТОВО
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CASE FILTER ================= -->
+
+<div
+  class="case-filter-modal"
+  id="caseFilterModal"
+>
+
+  <div class="filter-window">
+
+    <h2>
+      🎁 Категория кейсов
+    </h2>
+
+    <button
+      class="filter-option"
+      onclick="setCaseCategory('weapon')"
+    >
+      🔫 Кейсы с оружием
+    </button>
+
+    <button
+      class="filter-option"
+      onclick="setCaseCategory('graffiti')"
+    >
+      🎨 Кейсы с граффити
+    </button>
+
+    <button
+      class="filter-option"
+      onclick="setCaseCategory('armor')"
+    >
+      🛡️ Кейсы с бронёй
+    </button>
+
+    <button
+      class="filter-option"
+      onclick="setCaseCategory('soon')"
+    >
+      🔒 Кейсы с (скоро)
+    </button>
+
+    <button
+      class="filter-close"
+      onclick="closeCaseFilter()"
+    >
+      ГОТОВО
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= INVENTORY FILTER ================= -->
+
+<div
+  class="main-filter-modal"
+  id="inventoryFilterModal"
+>
+
+  <div class="filter-window">
+
+    <h2>
+      🎒 Фильтр инвентаря
+    </h2>
+
+    <button
+      class="filter-option selected"
+      onclick="setInventoryFilter('all')"
+      id="invFilterAll"
+    >
+      Все
+    </button>
+
+    <button
+      class="filter-option"
+      onclick="setInventoryFilter('weapon')"
+      id="invFilterWeapon"
+    >
+      🔫 Оружие
+    </button>
+
+    <button
+      class="filter-option"
+      onclick="setInventoryFilter('armor')"
+      id="invFilterArmor"
+    >
+      🛡️ Броня
+    </button>
+
+    <button
+      class="filter-option"
+      onclick="setInventoryFilter('dlc')"
+      id="invFilterDlc"
+    >
+      🎁 DLS
+    </button>
+
+    <button
+      class="filter-close"
+      onclick="closeInventoryFilter()"
+    >
+      ГОТОВО
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= STORE ================= -->
+
+<div
+  class="confirm-modal"
+  id="storeModal"
+>
+
+  <div
+    class="confirm-window"
+    style="max-height:85vh;overflow:auto"
+  >
+
+    <h2>
+      🪙 Магазин валюты
+    </h2>
+
+    <div
+      style="color:#8995a6;text-align:center;font-size:13px;margin-bottom:13px"
+    >
+      Покупка пока является визуальной.
+      Платежи не подключены.
+    </div>
+
+    <div class="store">
+
+      <div class="pack">
+
+        <div>
+          <div class="pack-coins">
+            200 🪙
+          </div>
+
+          <div class="pack-price">
+            ⭐ 15 Stars
+          </div>
+        </div>
+
+        <button
+          class="buy"
+          onclick="visualBuy(200,15)"
+        >
+          Купить
+        </button>
+
+      </div>
+
+
+      <div class="pack">
+
+        <div>
+          <div class="pack-coins">
+            500 🪙
+          </div>
+
+          <div class="pack-price">
+            ⭐ 30 Stars
+          </div>
+        </div>
+
+        <button
+          class="buy"
+          onclick="visualBuy(500,30)"
+        >
+          Купить
+        </button>
+
+      </div>
+
+
+      <div class="pack">
+
+        <div>
+          <div class="pack-coins">
+            1800 🪙
+          </div>
+
+          <div class="pack-price">
+            ⭐ 100 Stars
+          </div>
+        </div>
+
+        <button
+          class="buy"
+          onclick="visualBuy(1800,100)"
+        >
+          Купить
+        </button>
+
+      </div>
+
+    </div>
+
+    <button
+      class="filter-close"
+      onclick="closeStore()"
+    >
+      ЗАКРЫТЬ
+    </button>
+
+  </div>
+
+</div>
+
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<script>
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const API =
+"https://oxide-drops-api.maksimvaim56.workers.dev";
+
+
+/* =========================================================
+   RARITIES
+========================================================= */
+
+const RARITIES=[
+  {
+    name:"Обычный",
+    icon:"⬜",
+    value:15,
+    className:"common"
+  },
+  {
+    name:"Редкий",
+    icon:"🔵",
+    value:40,
+    className:"rare"
+  },
+  {
+    name:"Супер редкий",
+    icon:"🔷",
+    value:60,
+    className:"superrare"
+  },
+  {
+    name:"Эпический",
+    icon:"🟣",
+    value:85,
+    className:"epic"
+  },
+  {
+    name:"Мифический",
+    icon:"🔴",
+    value:100,
+    className:"mythic"
+  },
+  {
+    name:"Легендарный",
+    icon:"🟡",
+    value:125,
+    className:"legendary"
+  }
+];
+
+
+/* =========================================================
+   WEAPON RARITIES
+========================================================= */
+
+const WEAPON_RARITIES=[
+  {
+    ...RARITIES[0],
+    chance:52
+  },
+  {
+    ...RARITIES[1],
+    chance:17
+  },
+  {
+    ...RARITIES[2],
+    chance:13
+  },
+  {
+    ...RARITIES[3],
+    chance:10
+  },
+  {
+    ...RARITIES[4],
+    chance:6
+  },
+  {
+    ...RARITIES[5],
+    chance:2
+  }
+];
+
+
+/* =========================================================
+   RANKS
+========================================================= */
+
+const ranks=[
+  {
+    name:"Новичок",
+    hp:0
+  },
+  {
+    name:"Рядовой",
+    hp:140
+  },
+  {
+    name:"Сержант",
+    hp:550
+  },
+  {
+    name:"Лудаман младший",
+    hp:1000
+  },
+  {
+    name:"Лудаман",
+    hp:1600
+  },
+  {
+    name:"Лудаман Старший",
+    hp:2200
+  },
+  {
+    name:"Полковник Лудаман",
+    hp:3000
+  },
+  {
+    name:"Генерал",
+    hp:4200
+  },
+  {
+    name:"Профессионал",
+    hp:5000
+  },
+  {
+    name:"Легенда симулятора",
+    hp:10000
+  }
+];
+
+
+/* =========================================================
+   DAILY
+========================================================= */
+
+const dailyRewards=[
+  80,
+  80,
+  80,
+  150,
+  200,
+  220,
+  300
+];
+
+
+/* =========================================================
+   CASES
+========================================================= */
+
+const CASES=[
+
+  {
+    id:"ice",
+    name:"Морозный ужас",
+    icon:"❄️",
+    price:40,
+    type:"packs",
+    category:"pack",
+    available:true
+  },
+
+  {
+    id:"hell",
+    name:"Адское пламя",
+    icon:"🔥",
+    price:50,
+    type:"packs",
+    category:"pack",
+    available:true
+  },
+
+  {
+    id:"modern",
+    name:"Эпоха современности",
+    icon:"🤖",
+    price:30,
+    type:"packs",
+    category:"pack",
+    available:true
+  },
+
+  {
+    id:"weapon",
+    name:"Оружейный ящик",
+    icon:"🔫",
+    price:35,
+    type:"cases",
+    category:"weapon",
+    available:true
+  },
+
+  {
+    id:"graffiti",
+    name:"Граффити кейс",
+    icon:"🎨",
+    price:25,
+    type:"cases",
+    category:"graffiti",
+    available:false
+  },
+
+  {
+    id:"armor",
+    name:"Броневой кейс",
+    icon:"🛡️",
+    price:45,
+    type:"cases",
+    category:"armor",
+    available:false
+  },
+
+  {
+    id:"soon",
+    name:"Секретный кейс",
+    icon:"🔒",
+    price:0,
+    type:"cases",
+    category:"soon",
+    available:false
+  }
+
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const state={
+
+  coins:250,
+
+  hp:0,
+
+  casesOpened:0,
+
+  upgrades:0,
+
+  friends:0,
+
+  inventory:[],
+
+  selectedItems:[],
+
+  dailyClaimed:false,
+
+  dailyDate:"",
+
+  energy:100,
+
+  energyDate:"",
+
+  referralBonusIds:[]
+
+};
+
+
+/* =========================================================
+   RUNTIME
+========================================================= */
+
+let selectedChance=75;
+
+let strength=20;
+
+let holding=false;
+
+let strengthTimer=null;
+
+let caseOpening=false;
+
+let upgradeRunning=false;
+
+let confirmAction=null;
+
+let currentMainCategory="all";
+
+let currentMainFilter="all";
+
+let currentCaseCategory="all";
+
+let currentInventoryFilter="all";
+
+let selectedCaseResult=null;
+
+
+/* =========================================================
+   TELEGRAM
+========================================================= */
+
+function getTelegramUser(){
+
+  return (
+    window.Telegram &&
+    window.Telegram.WebApp &&
+    window.Telegram.WebApp.initDataUnsafe &&
+    window.Telegram.WebApp.initDataUnsafe.user
+  ) || null;
+
+}
+
+
+function initTelegram(){
+
+  if(!window.Telegram?.WebApp)
+    return;
+
+  try{
+
+    Telegram.WebApp.ready();
+
+    Telegram.WebApp.expand();
+
+    Telegram.WebApp.setHeaderColor("#070a0f");
+
+    Telegram.WebApp.setBackgroundColor("#070a0f");
+
+  }catch(e){
+
+    console.log(e);
+
+  }
+
+}
+
+
+/* =========================================================
+   SAVE / LOAD
+========================================================= */
+
+function save(){
+
+  localStorage.setItem(
+    "oxideDropsState",
+    JSON.stringify(state)
+  );
+
+}
+
+
+function load(){
+
+  const saved=
+    localStorage.getItem(
+      "oxideDropsState"
+    );
+
+  if(saved){
+
+    try{
+
+      const data=
+        JSON.parse(saved);
+
+      state.coins=
+        Number(data.coins ?? 250);
+
+      state.hp=
+        Number(data.hp ?? 0);
+
+      state.casesOpened=
+        Number(data.casesOpened ?? 0);
+
+      state.upgrades=
+        Number(data.upgrades ?? 0);
+
+      state.friends=
+        Number(data.friends ?? 0);
+
+      state.inventory=
+        Array.isArray(data.inventory)
+        ? data.inventory
+        : [];
+
+      state.selectedItems=[];
+
+      state.dailyClaimed=
+        Boolean(data.dailyClaimed);
+
+      state.dailyDate=
+        data.dailyDate || "";
+
+      state.energy=
+        Number(data.energy ?? 100);
+
+      state.energyDate=
+        data.energyDate || "";
+
+      state.referralBonusIds=
+        Array.isArray(data.referralBonusIds)
+        ? data.referralBonusIds
+        : [];
+
+    }catch(e){
+
+      console.log(e);
+
+    }
+
+  }
+
+  resetDailyIfNeeded();
+
+  resetEnergyIfNeeded();
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function todayKey(){
+
+  const d=new Date();
+
+  return [
+    d.getFullYear(),
+    String(d.getMonth()+1).padStart(2,"0"),
+    String(d.getDate()).padStart(2,"0")
+  ].join("-");
+
+}
+
+
+function resetDailyIfNeeded(){
+
+  const today=todayKey();
+
+  if(state.dailyDate!==today){
+
+    state.dailyDate=today;
+
+    state.dailyClaimed=false;
+
+  }
+
+}
+
+
+function resetEnergyIfNeeded(){
+
+  const today=todayKey();
+
+  if(state.energyDate!==today){
+
+    state.energyDate=today;
+
+    state.energy=100;
+
+  }
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function toast(text){
+
+  const el=
+    document.getElementById("toast");
+
+  el.textContent=text;
+
+  el.classList.add("show");
+
+  clearTimeout(
+    toast.timer
+  );
+
+  toast.timer=setTimeout(()=>{
+
+    el.classList.remove("show");
+
+  },2200);
+
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+function showPage(id,button){
+
+  if(caseOpening || upgradeRunning)
+    return;
+
+  document
+    .querySelectorAll(".page")
+    .forEach(p=>{
+      p.classList.add("hidden");
+    });
+
+  const page=
+    document.getElementById(id);
+
+  if(page)
+    page.classList.remove("hidden");
+
+  document
+    .querySelectorAll(".bottom button")
+    .forEach(b=>{
+      b.classList.remove("active");
+    });
+
+  if(button)
+    button.classList.add("active");
+
+  if(id==="inventory")
+    renderInventory();
+
+  if(id==="profile")
+    renderProfile();
+
+  if(id==="earn")
+    renderEarn();
+
+}
+
+
+/* =========================================================
+   RENDER ALL
+========================================================= */
+
+function render(){
+
+  document
+    .getElementById("coins")
+    .textContent=
+    state.coins.toLocaleString("ru-RU");
+
+  renderHomeCases();
+
+  renderInventory();
+
+  renderProfile();
+
+  renderDaily();
+
+  renderEarn();
+
+  updateDailyMarker();
+
+  renderSelectedSkins();
+
+  save();
+
+}
+
+
+/* =========================================================
+   HOME CASES
+========================================================= */
+
+function setMainCategory(category,button){
+
+  currentMainCategory=category;
+
+  document
+    .querySelectorAll(".category-chip")
+    .forEach(x=>{
+      x.classList.remove("active");
+    });
+
+  if(button)
+    button.classList.add("active");
+
+  renderHomeCases();
+
+}
+
+
+function renderHomeCases(){
+
+  const container=
+    document.getElementById("homeCases");
+
+  if(!container)
+    return;
+
+  const search=
+    (
+      document.getElementById("caseSearch")
+      ?.value || ""
+    )
+    .trim()
+    .toLowerCase();
+
+  let list=
+    CASES.filter(c=>c.available);
+
+
+  if(currentMainFilter==="cases"){
+
+    list=
+      list.filter(c=>
+        c.type==="cases"
+      );
+
+  }
+
+
+  if(currentMainFilter==="packs"){
+
+    list=
+      list.filter(c=>
+        c.type==="packs"
+      );
+
+  }
+
+
+  if(currentMainCategory==="packs"){
+
+    list=
+      list.filter(c=>
+        c.type==="packs"
+      );
+
+  }
+
+
+  if(currentCaseCategory!=="all"){
+
+    list=
+      list.filter(c=>
+        c.category===currentCaseCategory
+      );
+
+  }
+
+
+  if(search){
+
+    list=
+      list.filter(c=>
+        (
+          c.name+
+          " "+
+          c.type+
+          " "+
+          c.category
+        )
+        .toLowerCase()
+        .includes(search)
+      );
+
+  }
+
+
+  if(!list.length){
+
+    container.innerHTML=`
+      <div class="empty">
+        🔎 Ничего не найдено
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML=
+    list.map(c=>`
+
+      <div class="case">
+
+        <div class="case-icon">
+          ${c.icon}
+        </div>
+
+        <div class="case-info">
+
+          <div class="case-name">
+            ${c.name}
+          </div>
+
+          <div class="case-price">
+            ${c.price} 🪙
+          </div>
+
+          <div class="case-type">
+            ${getCaseTypeName(c)}
+          </div>
+
+        </div>
+
+        <button
+          class="open"
+          onclick="requestOpenCase('${c.id}')"
+        >
+          Открыть
+        </button>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function getCaseTypeName(c){
+
+  if(c.type==="packs")
+    return "📦 Набор";
+
+  if(c.category==="weapon")
+    return "🔫 Оружие";
+
+  if(c.category==="graffiti")
+    return "🎨 Граффити";
+
+  if(c.category==="armor")
+    return "🛡️ Броня";
+
+  return "🔒 Скоро";
+
+}
+
+
+/* =========================================================
+   MAIN FILTER
+========================================================= */
+
+function openMainFilter(){
+
+  document
+    .getElementById("mainFilterModal")
+    .classList.add("show");
+
+}
+
+
+function closeMainFilter(){
+
+  document
+    .getElementById("mainFilterModal")
+    .classList.remove("show");
+
+}
+
+
+function selectMainFilter(type){
+
+  currentMainFilter=type;
+
+  document
+    .getElementById("mainFilterCases")
+    .classList.toggle(
+      "selected",
+      type==="cases"
+    );
+
+  document
+    .getElementById("mainFilterPacks")
+    .classList.toggle(
+      "selected",
+      type==="packs"
+    );
+
+  closeMainFilter();
+
+  renderHomeCases();
+
+}
+
+
+/* =========================================================
+   CASE FILTER
+========================================================= */
+
+function openCaseFilter(){
+
+  document
+    .getElementById("caseFilterModal")
+    .classList.add("show");
+
+}
+
+
+function closeCaseFilter(){
+
+  document
+    .getElementById("caseFilterModal")
+    .classList.remove("show");
+
+}
+
+
+function setCaseCategory(category){
+
+  currentCaseCategory=category;
+
+  currentMainFilter="cases";
+
+  closeCaseFilter();
+
+  renderHomeCases();
+
+}
+
+
+/* =========================================================
+   CONFIRM SYSTEM
+========================================================= */
+
+function openConfirm(title,text,action){
+
+  document
+    .getElementById("confirmTitle")
+    .textContent=title;
+
+  document
+    .getElementById("confirmText")
+    .innerHTML=text;
+
+  confirmAction=action;
+
+  document
+    .getElementById("confirmModal")
+    .classList.add("show");
+
+}
+
+
+function closeConfirm(){
+
+  document
+    .getElementById("confirmModal")
+    .classList.remove("show");
+
+  confirmAction=null;
+
+}
+
+
+document
+  .getElementById("confirmYes")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const action=confirmAction;
+
+      closeConfirm();
+
+      if(typeof action==="function")
+        action();
+
+    }
+  );
+
+
+/* =========================================================
+   CASE OPEN CONFIRM
+========================================================= */
+
+function requestOpenCase(id){
+
+  const c=
+    CASES.find(x=>x.id===id);
+
+  if(!c)
+    return;
+
+  if(!c.available){
+
+    toast("Этот кейс пока недоступен");
+
+    return;
+
+  }
+
+  if(caseOpening){
+
+    toast("Кейс уже открывается");
+
+    return;
+
+  }
+
+  if(state.coins<c.price){
+
+    toast("Недостаточно монет");
+
+    return;
+
+  }
+
+  openConfirm(
+    "Открытие кейса",
+    `Вы уверены, что хотите открыть
+     <b>${c.name}</b> за
+     <b style="color:#ffd84d">${c.price} 🪙</b>?`,
+    ()=>{
+      openCase(c);
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CASE RESULT — RESULT IS CHOSEN FIRST
+========================================================= */
+
+function chooseCaseResult(c){
+
+  if(c.id==="weapon"){
+
+    return getWeaponRarity();
+
+  }
+
+  return getNormalRandomRarity();
+
+}
+
+
+/* =========================================================
+   RANDOM RARITY
+========================================================= */
+
+function getNormalRandomRarity(){
+
+  const roll=
+    Math.random()*100;
+
+  if(roll<55)
+    return RARITIES[0];
+
+  if(roll<75)
+    return RARITIES[1];
+
+  if(roll<88)
+    return RARITIES[2];
+
+  if(roll<96)
+    return RARITIES[3];
+
+  if(roll<99)
+    return RARITIES[4];
+
+  return RARITIES[5];
+
+}
+
+
+function getWeaponRarity(){
+
+  const roll=
+    Math.random()*100;
+
+  let current=0;
+
+  for(const rarity of WEAPON_RARITIES){
+
+    current+=rarity.chance;
+
+    if(roll<current)
+      return rarity;
+
+  }
+
+  return WEAPON_RARITIES[0];
+
+}
+
+
+/* =========================================================
+   RANDOM ROULETTE TAPE
+========================================================= */
+
+function createRouletteItems(){
+
+  const result=[];
+
+  for(let i=0;i<70;i++){
+
+    const rarity=
+      RARITIES[
+        Math.floor(
+          Math.random()*
+          RARITIES.length
+        )
+      ];
+
+    result.push(rarity);
+
+  }
+
+  return result;
+
+}
+
+
+/* =========================================================
+   OPEN CASE
+========================================================= */
+
+function openCase(c){
+
+  if(caseOpening)
+    return;
+
+  if(state.coins<c.price){
+
+    toast("Недостаточно монет");
+
+    return;
+
+  }
+
+
+  /*
+    ВАЖНО:
+    РЕЗУЛЬТАТ ВЫБИРАЕТСЯ ДО НАЧАЛА АНИМАЦИИ.
+  */
+
+  const winningRarity=
+    chooseCaseResult(c);
+
+  selectedCaseResult={
+    caseData:c,
+    rarity:winningRarity
+  };
+
+
+  caseOpening=true;
+
+  state.coins-=c.price;
+
+  state.casesOpened++;
+
+  state.hp+=15;
+
+  render();
+
+
+  const modal=
+    document.getElementById(
+      "caseModal"
+    );
+
+  const track=
+    document.getElementById(
+      "rouletteTrack"
+    );
+
+  const title=
+    document.getElementById(
+      "caseTitle"
+    );
+
+  const result=
+    document.getElementById(
+      "caseResult"
+    );
+
+  const close=
+    document.getElementById(
+      "closeCaseButton"
+    );
+
+
+  title.textContent=
+    `🎁 ${c.name}`;
+
+  result.textContent=
+    "Крутим...";
+
+  close.disabled=true;
+
+  track.innerHTML="";
+
+
+  /*
+    Лента полностью рандомная.
+    Победный элемент вставляется только
+    в позицию, на которой остановится
+    рулетка.
+  */
+
+  const roulette=
+    createRouletteItems();
+
+  const winningIndex=
+    45+
+    Math.floor(
+      Math.random()*6
+    );
+
+  roulette[winningIndex]=winningRarity;
+
+
+  roulette.forEach(rarity=>{
+
+    const item=
+      document.createElement("div");
+
+    item.className=
+      "roulette-item";
+
+    item.innerHTML=`
+
+      <div class="icon">
+        ${rarity.icon}
+      </div>
+
+      <span class="${rarity.className}">
+        ${rarity.name}
+      </span>
+
+    `;
+
+    track.appendChild(item);
+
+  });
+
+
+  modal.classList.add("show");
+
+
+  track.style.transition="none";
+
+  track.style.transform=
+    "translateX(0)";
+
+  void track.offsetWidth;
+
+
+  const itemWidth=103;
+
+  const centerOffset=
+    (track.parentElement.clientWidth/2)
+    -
+    (winningIndex*itemWidth)
+    -
+    47;
+
+  const randomOffset=
+    (Math.random()*12)-6;
+
+  const finalX=
+    centerOffset+
+    randomOffset;
+
+
+  /*
+    РОВНО 5.5 СЕКУНД.
+  */
+
+  track.style.transition=
+    "transform 5500ms cubic-bezier(.08,.75,.12,1)";
+
+  track.style.transform=
+    `translateX(${finalX}px)`;
+
+
+  setTimeout(()=>{
+
+    const rarity=
+      selectedCaseResult.rarity;
+
+
+    const item={
+
+      name:
+        `${rarity.name} скин`,
+
+      icon:
+        rarity.icon,
+
+      value:
+        rarity.value,
+
+      className:
+        rarity.className,
+
+      rarityIndex:
+        RARITIES.indexOf(rarity),
+
+      category:
+        c.category==="weapon"
+          ? "weapon"
+          : c.category==="armor"
+          ? "armor"
+          : c.category==="graffiti"
+          ? "dlc"
+          : "dlc",
+
+      sourceCase:
+        c.name
+
+    };
+
+
+    /*
+      СКИН СРАЗУ ПОСЛЕ ПОЛУЧЕНИЯ
+      ПОЯВЛЯЕТСЯ В ИНВЕНТАРЕ.
+    */
+
+    state.inventory.push(item);
+
+    result.innerHTML=
+      `🎉 Выпал:
+       <span class="${rarity.className}">
+         ${rarity.name} скин
+       </span>`;
+
+
+    close.disabled=false;
+
+    render();
+
+
+  },5550);
+
+}
+
+
+/* =========================================================
+   CLOSE CASE
+========================================================= */
+
+function closeCase(){
+
+  const close=
+    document.getElementById(
+      "closeCaseButton"
+    );
+
+  if(close.disabled)
+    return;
+
+  document
+    .getElementById("caseModal")
+    .classList.remove("show");
+
+  caseOpening=false;
+
+  selectedCaseResult=null;
+
+}
+
+
+/* =========================================================
+   INVENTORY
+========================================================= */
+
+function renderInventory(){
+
+  const grid=
+    document.getElementById(
+      "inventoryGrid"
+    );
+
+  if(!grid)
+    return;
+
+
+  let items=
+    state.inventory.map(
+      (item,index)=>({
+        item,
+        index
+      })
+    );
+
+
+  if(currentInventoryFilter!=="all"){
+
+    items=
+      items.filter(x=>
+        x.item.category===
+        currentInventoryFilter
+      );
+
+  }
+
+
+  if(!items.length){
+
+    grid.innerHTML=`
+
+      <div class="empty">
+
+        🎒
+        ${
+          state.inventory.length
+            ? "В этой категории пока ничего нет"
+            : "Инвентарь пуст"
+        }
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  grid.innerHTML=
+    items.map(({item,index})=>`
+
+      <div class="item">
+
+        <div
+          class="item-img ${item.className||""}"
+        >
+          ${item.icon||"⬜"}
+        </div>
+
+        <div class="item-name">
+          ${item.name}
+        </div>
+
+        <div
+          class="item-price ${item.className||""}"
+        >
+          ${item.value||0} 🪙
+        </div>
+
+        <button
+          class="sell"
+          onclick="sellItem(${index})"
+        >
+          💰 Продать
+        </button>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function sellItem(index){
+
+  if(upgradeRunning)
+    return;
+
+  const item=
+    state.inventory[index];
+
+  if(!item)
+    return;
+
+
+  if(
+    state.selectedItems.includes(item)
+  ){
+
+    toast(
+      "Сначала убери скин из Upgrade"
+    );
+
+    return;
+
+  }
+
+
+  state.coins+=
+    Number(item.value||0);
+
+  state.inventory.splice(
+    index,
+    1
+  );
+
+  render();
+
+  toast(
+    `Продано за ${item.value||0} 🪙`
+  );
+
+}
+
+
+/* =========================================================
+   SELL ALL
+========================================================= */
+
+function confirmSellAll(){
+
+  if(upgradeRunning){
+
+    toast(
+      "Сначала закончи Upgrade"
+    );
+
+    return;
+
+  }
+
+
+  if(!state.inventory.length){
+
+    toast(
+      "Инвентарь уже пуст"
+    );
+
+    return;
+
+  }
+
+
+  openConfirm(
+    "Продать всё",
+    "Вы уверены, что хотите продать всё содержимое инвентаря?",
+    sellAll
+  );
+
+}
+
+
+function sellAll(){
+
+  let total=0;
+
+  state.inventory.forEach(item=>{
+
+    if(
+      !state.selectedItems.includes(item)
+    ){
+
+      total+=
+        Number(item.value||0);
+
+    }
+
+  });
+
+
+  const selectedCount=
+    state.selectedItems.length;
+
+
+  if(selectedCount>0){
+
+    toast(
+      "Выбранные в Upgrade скины не проданы"
+    );
+
+  }
+
+
+  state.inventory=
+    state.inventory.filter(
+      item=>
+        state.selectedItems.includes(item)
+    );
+
+
+  state.coins+=total;
+
+  render();
+
+  toast(
+    `Продано на ${total} 🪙`
+  );
+
+}
+
+
+/* =========================================================
+   INVENTORY FILTER
+========================================================= */
+
+function openInventoryFilter(){
+
+  document
+    .getElementById("inventoryFilterModal")
+    .classList.add("show");
+
+}
+
+
+function closeInventoryFilter(){
+
+  document
+    .getElementById("inventoryFilterModal")
+    .classList.remove("show");
+
+}
+
+
+function setInventoryFilter(filter){
+
+  currentInventoryFilter=filter;
+
+  document
+    .querySelectorAll(
+      "#inventoryFilterModal .filter-option"
+    )
+    .forEach(x=>{
+      x.classList.remove("selected");
+    });
+
+
+  const map={
+    all:"invFilterAll",
+    weapon:"invFilterWeapon",
+    armor:"invFilterArmor",
+    dlc:"invFilterDlc"
+  };
+
+
+  const el=
+    document.getElementById(
+      map[filter]
+    );
+
+  if(el)
+    el.classList.add("selected");
+
+
+  renderInventory();
+
+  closeInventoryFilter();
+
+}
+
+
+/* =========================================================
+   UPGRADE SELECTOR
+========================================================= */
+
+function openSkinSelector(){
+
+  if(upgradeRunning){
+
+    toast(
+      "Upgrade уже выполняется"
+    );
+
+    return;
+
+  }
+
+
+  if(!state.inventory.length){
+
+    toast(
+      "Сначала получи скин из кейса"
+    );
+
+    return;
+
+  }
+
+
+  const modal=
+    document.getElementById(
+      "skinSelector"
+    );
+
+  const list=
+    document.getElementById(
+      "skinList"
+    );
+
+  list.innerHTML="";
+
+
+  state.inventory.forEach((item,index)=>{
+
+    const button=
+      document.createElement("button");
+
+    button.className=
+      "skin-select-item";
+
+
+    if(
+      state.selectedItems.includes(item)
+    ){
+
+      button.classList.add(
+        "selected"
+      );
+
+    }
+
+
+    button.innerHTML=`
+
+      <div class="skin-select-icon">
+        ${item.icon||"⬜"}
+      </div>
+
+      <div class="skin-select-info">
+
+        <div
+          class="skin-select-name ${item.className||""}"
+        >
+          ${item.name}
+        </div>
+
+        <div class="skin-select-value">
+          ${item.value||0} 🪙
+        </div>
+
+      </div>
+
+      <div>
+        ${
+          state.selectedItems.includes(item)
+            ? "✅"
+            : "○"
+        }
+      </div>
+
+    `;
+
+
+    button.onclick=()=>{
+
+      toggleSelectedItem(item);
+
+      openSkinSelector();
+
+    };
+
+
+    list.appendChild(button);
+
+  });
+
+
+  modal.classList.add("show");
+
+}
+
+
+function closeSkinSelector(){
+
+  document
+    .getElementById(
+      "skinSelector"
+    )
+    .classList.remove("show");
+
+  renderSelectedSkins();
+
+}
+
+
+function toggleSelectedItem(item){
+
+  const selected=
+    state.selectedItems;
+
+
+  if(selected.includes(item)){
+
+    selected.splice(
+      selected.indexOf(item),
+      1
+    );
+
+    return;
+
+  }
+
+
+  if(selected.length>=3){
+
+    toast(
+      "Можно выбрать максимум 3 скина"
+    );
+
+    return;
+
+  }
+
+
+  if(selected.length>0){
+
+    const currentRarity=
+      selected[0].rarityIndex;
+
+
+    if(
+      item.rarityIndex!==currentRarity
+    ){
+
+      toast(
+        "Можно выбрать только одинаковую редкость"
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  selected.push(item);
+
+}
+
+
+function renderSelectedSkins(){
+
+  const icon=
+    document.getElementById(
+      "upgradeIcon"
+    );
+
+  const name=
+    document.getElementById(
+      "upgradeName"
+    );
+
+  const count=
+    document.getElementById(
+      "selectedCount"
+    );
+
+  const value=
+    document.getElementById(
+      "upgradeValue"
+    );
+
+
+  if(!state.selectedItems.length){
+
+    icon.innerHTML="⬜";
+
+    name.textContent=
+      "Скины не выбраны";
+
+    count.textContent=
+      "Выберите до 3 скинов одной редкости";
+
+    value.textContent="—";
+
+    return;
+
+  }
+
+
+  icon.innerHTML=
+    state.selectedItems
+      .map(item=>
+        `<span>${item.icon||"⬜"}</span>`
+      )
+      .join("");
+
+
+  const rarity=
+    RARITIES[
+      state.selectedItems[0].rarityIndex
+    ];
+
+
+  name.textContent=
+    rarity.name;
+
+
+  count.textContent=
+    `Выбрано скинов: ${state.selectedItems.length}/3`;
+
+
+  const total=
+    state.selectedItems.reduce(
+      (sum,item)=>
+        sum+
+        Number(item.value||0),
+      0
+    );
+
+
+  value.textContent=
+    `${total} 🪙`;
+
+}
+
+
+/* =========================================================
+   UPGRADE CHANCE
+========================================================= */
+
+function selectChance(
+  chance,
+  button
+){
+
+  if(upgradeRunning)
+    return;
+
+  selectedChance=
+    chance;
+
+
+  document
+    .querySelectorAll(".chance")
+    .forEach(x=>{
+      x.classList.remove(
+        "selected"
+      );
+    });
+
+
+  button.classList.add(
+    "selected"
+  );
+
+
+  document
+    .getElementById("wheelText")
+    .textContent=
+    chance+"%";
+
+
+  const degrees=
+    chance===75
+      ? 270
+      : chance===50
+      ? 180
+      : 118.8;
+
+
+  let color=
+    chance===75
+      ? "#5ee68a"
+      : chance===50
+      ? "#ffd84d"
+      : "#ff6464";
+
+
+  document
+    .getElementById("wheel")
+    .style.background=
+    `conic-gradient(
+      from 0deg,
+      ${color} 0deg ${degrees}deg,
+      #252c36 ${degrees}deg 360deg
+    )`;
+
+}
+
+
+/* =========================================================
+   STRENGTH
+========================================================= */
+
+function startStrength(){
+
+  if(upgradeRunning)
+    return;
+
+
+  if(!state.selectedItems.length){
+
+    toast(
+      "Сначала выбери скины"
+    );
+
+    return;
+
+  }
+
+
+  if(state.coins<10){
+
+    toast(
+      "Недостаточно монет"
+    );
+
+    return;
+
+  }
+
+
+  if(holding)
+    return;
+
+
+  holding=true;
+
+  strength=20;
+
+
+  document
+    .getElementById("strength")
+    .textContent=
+    strength;
+
+
+  const button=
+    document.getElementById(
+      "holdButton"
+    );
+
+
+  button.classList.add(
+    "active"
+  );
+
+
+  strengthTimer=
+    setInterval(()=>{
+
+      if(!holding)
+        return;
+
+
+      strength+=5;
+
+
+      if(strength>=100){
+
+        strength=100;
+
+        document
+          .getElementById("strength")
+          .textContent=
+          strength;
+
+        clearInterval(
+          strengthTimer
+        );
+
+        strengthTimer=null;
+
+        return;
+
+      }
+
+
+      document
+        .getElementById("strength")
+        .textContent=
+        strength;
+
+    },52);
+
+}
+
+
+/* =========================================================
+   STOP STRENGTH
+========================================================= */
+
+function stopStrength(){
+
+  if(!holding)
+    return;
+
+
+  holding=false;
+
+
+  clearInterval(
+    strengthTimer
+  );
+
+  strengthTimer=null;
+
+
+  document
+    .getElementById("holdButton")
+    .classList.remove(
+      "active"
+    );
+
+
+  startUpgrade();
+
+}
+
+
+/* =========================================================
+   UPGRADE
+========================================================= */
+
+function startUpgrade(){
+
+  if(upgradeRunning)
+    return;
+
+
+  if(!state.selectedItems.length){
+
+    toast(
+      "Выбери скины"
+    );
+
+    return;
+
+  }
+
+
+  if(state.coins<10){
+
+    toast(
+      "Недостаточно монет"
+    );
+
+    return;
+
+  }
+
+
+  upgradeRunning=true;
+
+
+  const button=
+    document.getElementById(
+      "holdButton"
+    );
+
+
+  button.disabled=true;
+
+
+  state.coins-=10;
+
+  state.hp+=20;
+
+  state.upgrades++;
+
+
+  render();
+
+
+  const wheel=
+    document.getElementById(
+      "wheel"
+    );
+
+
+  /*
+    РЕЗУЛЬТАТ РЕШАЕТСЯ ДО АНИМАЦИИ.
+  */
+
+  const success=
+    Math.random()*100<
+    selectedChance;
+
+
+  /*
+    Сила влияет на скорость.
+
+    0-19  = 100%
+    20-39 = 110%
+    40-59 = 120%
+    60-79 = 130%
+    80-99 = 140%
+    100   = 150%
+
+    Базовая скорость = 4 оборота/сек.
+  */
+
+  const speedMultiplier=
+    1+
+    Math.floor(strength/20)*0.10;
+
+
+  const baseDuration=5500;
+
+  const duration=
+    Math.max(
+      5000,
+      Math.min(
+        6000,
+        baseDuration/speedMultiplier
+      )
+    );
+
+
+  const baseRotations=
+    Math.max(
+      20,
+      Math.round(
+        4*(duration/1000)
+      )
+    );
+
+
+  const coloredDegrees=
+    selectedChance===75
+      ? 270
+      : selectedChance===50
+      ? 180
+      : 118.8;
+
+
+  /*
+    Выбираем ТОЧКУ остановки.
+    Если success — она обязательно
+    попадает в закрашенную часть.
+    Если fail — в незакрашенную.
+  */
+
+  let targetAngle;
+
+
+  if(success){
+
+    targetAngle=
+      8+
+      Math.random()*
+      Math.max(
+        5,
+        coloredDegrees-16
+      );
+
+  }else{
+
+    targetAngle=
+      coloredDegrees+
+      8+
+      Math.random()*
+      Math.max(
+        5,
+        360-coloredDegrees-16
+      );
+
+  }
+
+
+  const randomStart=
+    Math.random()*360;
+
+
+  const totalRotation=
+    baseRotations*360+
+    targetAngle+
+    randomStart;
+
+
+  wheel.style.transition="none";
+
+  wheel.style.transform=
+    `rotate(${randomStart}deg)`;
+
+
+  void wheel.offsetWidth;
+
+
+  wheel.style.transition=
+    `transform ${duration}ms cubic-bezier(.12,.72,.16,1)`;
+
+
+  wheel.style.transform=
+    `rotate(${totalRotation}deg)`;
+
+
+  setTimeout(()=>{
+
+    if(success){
+
+      upgradeSuccess();
+
+    }else{
+
+      upgradeFail();
+
+    }
+
+
+    upgradeRunning=false;
+
+    button.disabled=false;
+
+    strength=20;
+
+
+    document
+      .getElementById("strength")
+      .textContent=
+      "20";
+
+
+    state.selectedItems=[];
+
+
+    renderSelectedSkins();
+
+    render();
+
+
+  },duration+100);
+
+}
+
+
+/* =========================================================
+   UPGRADE SUCCESS
+========================================================= */
+
+function upgradeSuccess(){
+
+  if(!state.selectedItems.length)
+    return;
+
+
+  const current=
+    state.selectedItems[0].rarityIndex;
+
+
+  let increase=1;
+
+
+  if(selectedChance===75)
+    increase=1;
+
+
+  if(selectedChance===50)
+    increase=2;
+
+
+  if(selectedChance===33)
+    increase=3;
+
+
+  const newIndex=
+    Math.min(
+      RARITIES.length-1,
+      current+increase
+    );
+
+
+  const newRarity=
+    RARITIES[newIndex];
+
+
+  state.selectedItems.forEach(item=>{
+
+    item.name=
+      `${newRarity.name} скин`;
+
+    item.icon=
+      newRarity.icon;
+
+    item.value=
+      newRarity.value;
+
+    item.className=
+      newRarity.className;
+
+    item.rarityIndex=
+      newIndex;
+
+  });
+
+
+  state.hp+=5;
+
+
+  toast(
+    `✅ Успех! Получена редкость: ${newRarity.name}`
+  );
+
+}
+
+
+/* =========================================================
+   UPGRADE FAIL
+========================================================= */
+
+function upgradeFail(){
+
+  if(!state.selectedItems.length)
+    return;
+
+
+  const current=
+    state.selectedItems[0].rarityIndex;
+
+
+  const decrease=
+    Math.random()<0.5
+      ? 1
+      : 2;
+
+
+  if(current===0){
+
+    state.selectedItems.forEach(item=>{
+
+      const index=
+        state.inventory.indexOf(item);
+
+      if(index!==-1)
+        state.inventory.splice(
+          index,
+          1
+        );
+
+    });
+
+
+    toast(
+      "❌ Upgrade провален — обычные скины исчезли"
+    );
+
+    return;
+
+  }
+
+
+  const newIndex=
+    current-decrease;
+
+
+  if(newIndex<0){
+
+    state.selectedItems.forEach(item=>{
+
+      const index=
+        state.inventory.indexOf(item);
+
+      if(index!==-1)
+        state.inventory.splice(
+          index,
+          1
+        );
+
+    });
+
+
+    toast(
+      "❌ Скины потеряны"
+    );
+
+    return;
+
+  }
+
+
+  const newRarity=
+    RARITIES[newIndex];
+
+
+  state.selectedItems.forEach(item=>{
+
+    item.name=
+      `${newRarity.name} скин`;
+
+    item.icon=
+      newRarity.icon;
+
+    item.value=
+      newRarity.value;
+
+    item.className=
+      newRarity.className;
+
+    item.rarityIndex=
+      newIndex;
+
+  });
+
+
+  toast(
+    `❌ Провал — редкость снижена на ${decrease}`
+  );
+
+}
+
+
+/* =========================================================
+   PROFILE / RANK
+========================================================= */
+
+function getRank(){
+
+  let rank=ranks[0];
+
+
+  for(const r of ranks){
+
+    if(state.hp>=r.hp)
+      rank=r;
+
+  }
+
+
+  return rank;
+
+}
+
+
+function renderProfile(){
+
+  const rank=
+    getRank();
+
+
+  const user=
+    getTelegramUser();
+
+
+  const name=
+    user?.first_name
+    ? (
+        user.last_name
+        ? `${user.first_name} ${user.last_name}`
+        : user.first_name
+      )
+    : "Игрок";
+
+
+  document
+    .getElementById("profileName")
+    .textContent=
+    name;
+
+
+  document
+    .getElementById("profileRank")
+    .textContent=
+    rank.name;
+
+
+  document
+    .getElementById("statOpen")
+    .textContent=
+    state.casesOpened;
+
+
+  document
+    .getElementById("statUpgrade")
+    .textContent=
+    state.upgrades;
+
+
+  document
+    .getElementById("statFriends")
+    .textContent=
+    state.friends;
+
+
+  const nextIndex=
+    ranks.indexOf(rank)+1;
+
+
+  const next=
+    ranks[nextIndex];
+
+
+  if(next){
+
+    document
+      .getElementById("xpText")
+      .textContent=
+      `${state.hp} / ${next.hp} HP`;
+
+
+    const previous=
+      rank.hp;
+
+
+    const percent=
+      ((state.hp-previous)/
+      (next.hp-previous))*100;
+
+
+    document
+      .getElementById("xpBar")
+      .style.width=
+      Math.max(
+        0,
+        Math.min(
+          100,
+          percent
+        )
+      )+"%";
+
+  }else{
+
+    /*
+      После последнего ранга HP
+      продолжает копиться.
+    */
+
+    document
+      .getElementById("xpText")
+      .textContent=
+      `${state.hp} HP • МАКСИМАЛЬНЫЙ РАНГ`;
+
+
+    document
+      .getElementById("xpBar")
+      .style.width=
+      "100%";
+
+  }
+
+
+  updateTelegramAvatar();
+
+}
+
+
+function updateTelegramAvatar(){
+
+  const user=
+    getTelegramUser();
+
+
+  const avatar=
+    document.getElementById(
+      "avatar"
+    );
+
+
+  const headerAvatar=
+    document.getElementById(
+      "headerAvatar"
+    );
+
+
+  if(user?.photo_url){
+
+    avatar.innerHTML=
+      `<img src="${user.photo_url}" alt="avatar">`;
+
+    headerAvatar.src=
+      user.photo_url;
+
+  }else{
+
+    avatar.innerHTML=
+      "<span>👤</span>";
+
+    headerAvatar.src=
+      "oxide-avatar.jpeg";
+
+  }
+
+}
+
+
+/* =========================================================
+   DAILY
+========================================================= */
+
+function renderDaily(){
+
+  const box=
+    document.getElementById(
+      "dailyBox"
+    );
+
+  if(!box)
+    return;
+
+
+  box.innerHTML="";
+
+
+  dailyRewards.forEach(
+    (reward,index)=>{
+
+      const div=
+        document.createElement(
+          "div"
+        );
+
+
+      div.className="day";
+
+
+      if(state.dailyClaimed)
+        div.classList.add(
+          "claimed"
+        );
+
+
+      if(
+        index===0 &&
+        !state.dailyClaimed
+      ){
+
+        div.classList.add(
+          "today"
+        );
+
+      }
+
+
+      div.innerHTML=
+        `Д${index+1}<b>${reward}</b>`;
+
+
+      box.appendChild(div);
+
+    }
+  );
+
+
+  const button=
+    document.getElementById(
+      "claimDailyButton"
+    );
+
+
+  const status=
+    document.getElementById(
+      "dailyStatus"
+    );
+
+
+  if(state.dailyClaimed){
+
+    button.disabled=true;
+
+    button.textContent=
+      "ПОДАРОК ПОЛУЧЕН";
+
+    status.textContent=
+      "Сегодняшняя награда уже получена";
+
+  }else{
+
+    button.disabled=false;
+
+    button.textContent=
+      "ЗАБРАТЬ ПОДАРОК";
+
+    status.textContent=
+      "🎁 Тебе доступен подарок за вход";
+
+  }
+
+}
+
+
+function updateDailyMarker(){
+
+  const dot=
+    document.getElementById(
+      "dailyDot"
+    );
+
+
+  if(!dot)
+    return;
+
+
+  dot.style.display=
+    state.dailyClaimed
+      ? "none"
+      : "block";
+
+}
+
+
+function claimDaily(){
+
+  resetDailyIfNeeded();
+
+
+  if(state.dailyClaimed){
+
+    toast(
+      "Подарок уже получен"
+    );
+
+    return;
+
+  }
+
+
+  const reward=
+    dailyRewards[0];
+
+
+  state.coins+=reward;
+
+  state.dailyClaimed=true;
+
+
+  render();
+
+
+  toast(
+    `🎁 Получено ${reward} 🪙`
+  );
+
+}
+
+
+/* =========================================================
+   EARN
+========================================================= */
+
+function renderEarn(){
+
+  resetEnergyIfNeeded();
+
+
+  const energy=
+    document.getElementById(
+      "energy"
+    );
+
+
+  const energyBar=
+    document.getElementById(
+      "energyBar"
+    );
+
+
+  const referral=
+    document.getElementById(
+      "referralLink"
+    );
+
+
+  if(energy){
+
+    energy.textContent=
+      state.energy;
+
+  }
+
+
+  if(energyBar){
+
+    energyBar.style.width=
+      Math.max(
+        0,
+        state.energy
+      )+"%";
+
+  }
+
+
+  if(referral){
+
+    const user=
+      getTelegramUser();
+
+
+    /*
+      Если username бота будет известен,
+      можно заменить BOT_USERNAME.
+    */
+
+    const BOT_USERNAME=
+      "OXIDE_DROPS_BOT";
+
+
+    if(user?.id){
+
+      referral.value=
+        `https://t.me/${BOT_USERNAME}?start=ref_${user.id}`;
+
+    }else{
+
+      referral.value=
+        "Открой игру через Telegram";
+
+    }
+
+  }
+
+}
+
+
+function earnCoin(event){
+
+  resetEnergyIfNeeded();
+
+
+  if(state.energy<=0){
+
+    toast(
+      "⚡ Энергия закончилась. Возвращайся завтра!"
+    );
+
+    return;
+
+  }
+
+
+  state.energy--;
+
+  state.coins++;
+
+
+  const plus=
+    document.createElement(
+      "div"
+    );
+
+
+  plus.className=
+    "coin-plus";
+
+  plus.textContent=
+    "+1";
+
+
+  const area=
+    document.querySelector(
+      ".coin-area"
+    );
+
+
+  const rect=
+    area.getBoundingClientRect();
+
+
+  let x=
+    event.clientX-
+    rect.left;
+
+
+  let y=
+    event.clientY-
+    rect.top;
+
+
+  if(!event.clientX){
+
+    x=
+      rect.width/2;
+
+    y=
+      rect.height/2;
+
+  }
+
+
+  plus.style.left=
+    x+"px";
+
+  plus.style.top=
+    y+"px";
+
+
+  area.appendChild(
+    plus
+  );
+
+
+  setTimeout(()=>{
+
+    plus.remove();
+
+  },700);
+
+
+  renderEarn();
+
+  document
+    .getElementById("coins")
+    .textContent=
+    state.coins.toLocaleString(
+      "ru-RU"
+    );
+
+
+  save();
+
+}
+
+
+function copyReferral(){
+
+  const input=
+    document.getElementById(
+      "referralLink"
+    );
+
+
+  if(!input.value){
+
+    toast(
+      "Ссылка недоступна"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ){
+
+    navigator.clipboard
+      .writeText(input.value)
+      .then(()=>{
+        toast("✅ Ссылка скопирована");
+      })
+      .catch(()=>{
+        fallbackCopy(input);
+      });
+
+  }else{
+
+    fallbackCopy(input);
+
+  }
+
+}
+
+
+function fallbackCopy(input){
+
+  input.select();
+
+  try{
+
+    document.execCommand("copy");
+
+    toast("✅ Ссылка скопирована");
+
+  }catch(e){
+
+    toast("Скопируй ссылку вручную");
+
+  }
+
+}
+
+
+/* =========================================================
+   STORE
+========================================================= */
+
+function openStore(){
+
+  document
+    .getElementById("storeModal")
+    .classList.add("show");
+
+}
+
+
+function closeStore(){
+
+  document
+    .getElementById("storeModal")
+    .classList.remove("show");
+
+}
+
+
+function visualBuy(
+  coins,
+  stars
+){
+
+  toast(
+    `${coins} 🪙 за ⭐ ${stars} — платежи пока отключены`
+  );
+
+}
+
+
+/* =========================================================
+   TELEGRAM USER ID STORAGE
+========================================================= */
+
+function setupTelegramProfile(){
+
+  const user=
+    getTelegramUser();
+
+
+  if(!user)
+    return;
+
+
+  /*
+    Локальные данные разделяются
+    по Telegram ID.
+
+    Это важно, чтобы при открытии
+    сайта другим Telegram-пользователем
+    не использовались чужие локальные данные.
+  */
+
+  const currentKey=
+    "oxideDropsTelegramUser";
+
+
+  const oldUser=
+    localStorage.getItem(
+      currentKey
+    );
+
+
+  const currentId=
+    String(user.id);
+
+
+  if(oldUser!==currentId){
+
+    localStorage.removeItem(
+      "oxideDropsState"
+    );
+
+    state.coins=250;
+    state.hp=0;
+    state.casesOpened=0;
+    state.upgrades=0;
+    state.friends=0;
+    state.inventory=[];
+    state.selectedItems=[];
+    state.dailyClaimed=false;
+    state.dailyDate="";
+    state.energy=100;
+    state.energyDate="";
+    state.referralBonusIds=[];
+
+
+    localStorage.setItem(
+      currentKey,
+      currentId
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CLOSE MODALS BY BACKGROUND
+========================================================= */
+
+document
+  .getElementById("caseModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target.id==="caseModal" &&
+        !caseOpening
+      ){
+
+        e.currentTarget
+          .classList.remove("show");
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("skinSelector")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target.id==="skinSelector"
+      ){
+
+        closeSkinSelector();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("mainFilterModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target.id==="mainFilterModal"
+      ){
+
+        closeMainFilter();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("caseFilterModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target.id==="caseFilterModal"
+      ){
+
+        closeCaseFilter();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("inventoryFilterModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target.id==="inventoryFilterModal"
+      ){
+
+        closeInventoryFilter();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("storeModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target.id==="storeModal"
+      ){
+
+        closeStore();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   HOLD BUTTON
+========================================================= */
+
+const holdButton=
+  document.getElementById(
+    "holdButton"
+  );
+
+
+holdButton.addEventListener(
+  "pointerdown",
+  e=>{
+
+    e.preventDefault();
+
+    startStrength();
+
+  }
+);
+
+
+holdButton.addEventListener(
+  "pointerup",
+  e=>{
+
+    e.preventDefault();
+
+    stopStrength();
+
+  }
+);
+
+
+holdButton.addEventListener(
+  "pointercancel",
+  ()=>{
+    stopStrength();
+  }
+);
+
+
+holdButton.addEventListener(
+  "pointerleave",
+  ()=>{
+
+    if(holding)
+      stopStrength();
+
+  }
+);
+
+
+/* =========================================================
+   PREVENT HOLD CONTEXT MENU
+========================================================= */
+
+holdButton.addEventListener(
+  "contextmenu",
+  e=>{
+    e.preventDefault();
+  }
+);
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+function init(){
+
+  initTelegram();
+
+  setupTelegramProfile();
+
+  load();
+
+  render();
+
+  renderSelectedSkins();
+
+}
+
+
+init();
+
+</script>
+
+</body>
+</html>
